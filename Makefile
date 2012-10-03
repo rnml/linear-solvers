@@ -1,23 +1,41 @@
-PACKAGES = core
-SYNTAX_EXTS = sexplib
-MODULES= linear diff_logic std
+
+### PARAMETERS #####################################################
+
+PACKAGES=core
+SYNTAX=sexplib
+MODULES=linear diff_logic std
 
 B=solvers
 T=$B.cmxa
 
-FOR_PACK_OPT = -for-pack Solvers
-SYNTAX_EXT_OPT = -syntax campl4o
+FOR_PACK_OPT=-for-pack Solvers
 
-### BEGIN BOILERPLATE ##########################################################
+### RULES ##########################################################
 
-COMPILE_FLAGS=-w YSPUZF -warn-error YSPUZ
+SYNTAX_PACKAGES=$(addsuffix .syntax, $(SYNTAX))
+
+PACKAGE_FLAGS=$(addprefix -package , $(SYNTAX_PACKAGES) $(PACKAGES))
+
+FIND_OPTS=$(PACKAGE_FLAGS)
+ifdef SYNTAX
+  ifneq "$(SYNTAX)" ""
+    FIND_OPTS=-syntax camlp4o $(PACKAGE_FLAGS)
+  endif
+endif
+
+OCAMLOPT_FLAGS=\
+  $(FIND_OPTS) \
+  -thread \
+  -linkpkg \
+  -w YSPUZF \
+  -warn-error YSPUZ
 
 OCAMLOPT=ocamlfind ocamlopt
 OCAMLDEP=ocamlfind ocamldep
 OCAMLYACC=ocamlfind ocamlyacc
 OCAMLLEX=ocamlfind ocamllex -q
 
-all: init main.exe
+all: init $T
 	@echo done
 
 init:
@@ -33,10 +51,10 @@ $B.cmo: $(OBJECTS)
 	$(OCAMLC) -pack $(OBJECTS) -o $B.cmo
 
 std.cmx: std.ml
-	$(OCAMLOPT) $(FOR_PACK_OPT) -c std.ml
+	$(OCAMLOPT) $(OCAMLOPT_FLAGS) $(FOR_PACK_OPT) -c std.ml
 
 %.exe: $(OBJECTS)
-	$(OCAMLOPT) -thread -package $(PACKAGES) -linkpkg $(OBJECTS) -o $*.exe
+	$(OCAMLOPT) -thread $(addprefix -package , $(PACKAGES)) -linkpkg $(OBJECTS) -o $*.exe
 
 %.cma: %.cmo
 	$(OCAMLC) -thread -a $*.cmo -o $*.cma
@@ -48,10 +66,10 @@ std.cmx: std.ml
 	ln -sf $*_intf.ml $*_intf.mli 
 
 %.cmi: %.mli
-	$(OCAMLOPT) -thread $(SYNTAX_EXT_OPT) -package $(SYNTAX_EXT_PACKAGES) -package $(PACKAGES) -linkpkg $(COMPILE_FLAGS) -c $*.mli
+	$(OCAMLOPT) $(OCAMLOPT_FLAGS) -c $*.mli
 
 %.cmx: %.cmi %.ml
-	$(OCAMLOPT) -thread $(SYNTAX_EXT_OPT) -package $(SYNTAX_EXT_PACKAGES) -package $(PACKAGES) -linkpkg $(COMPILE_FLAGS) -c $*.ml
+	$(OCAMLOPT) $(OCAMLOPT_FLAGS) $(FOR_PACK_OPT) -c $*.ml
 
 %.ml %.mli: %.mly
 	$(OCAMLYACC) $*.mly
@@ -59,11 +77,11 @@ std.cmx: std.ml
 %.ml: %.mli %.mll
 	$(OCAMLLEX) $*.mll
 
-.depend: $(SRC)
-	$(OCAMLDEP) *.mli *.ml > .depend
+.depend:
+	$(OCAMLDEP) $(FIND_OPTS) *.mli *.ml > .depend
 
 clean:
-	rm -rf .depend *.o *.a *.cmi *.cmo *.cma *.cmx *.cmxa $(SRC) $T
+	rm -rf .depend *.o *.a *.cmi *.cmo *.cma *.cmx *.cmxa *.exe
 
 include .depend
 
