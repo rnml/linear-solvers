@@ -1,5 +1,5 @@
 (** Incremental linear algebra solver *)
-(* 
+(*
    Copyright 2008, Nathan Mishra-Linger
    License: BSD
 *)
@@ -34,7 +34,7 @@ module Ordering = struct
   open T
   let of_int n =
     if n = 0 then EQ else
-    if n < 0 then LT else
+      if n < 0 then LT else
     (* n > 0 *)   GT
 end
 open Ordering.T
@@ -49,14 +49,14 @@ include struct (*  terms of the form a1*x1 + ... + aN*xN + b  *)
   type scalar = float
 
   type t = Sum of term list * scalar
- 
+
   and term = Mult of scalar * var
- 
+
   and var = {
     tag : int; (* for var comparison *)
     mutable value : t option;
   }
- 
+
 end
 
 let count = ref 0 (* min_int *)
@@ -88,12 +88,12 @@ let plus (Sum (ts1, b1)) (Sum (ts2, b2)) =
     | [], ts | ts, [] -> ts
     | (Mult (a1, x1) as t1 :: ts1 as tts1),
       (Mult (a2, x2) as t2 :: ts2 as tts2) ->
-        begin
-          match Ordering.of_int (Int.compare x1.tag x2.tag) with
-          | LT -> t1 :: merge (ts1, tts2)
-          | GT -> t2 :: merge (tts1, ts2)
-          | EQ -> cons (Mult (a1 +. a2, x1)) (merge (ts1, ts2))
-        end
+      begin
+        match Ordering.of_int (Int.compare x1.tag x2.tag) with
+        | LT -> t1 :: merge (ts1, tts2)
+        | GT -> t2 :: merge (tts1, ts2)
+        | EQ -> cons (Mult (a1 +. a2, x1)) (merge (ts1, ts2))
+      end
   in
   Sum (merge (ts1, ts2), b1 +. b2)
 
@@ -110,7 +110,7 @@ let solved x = match x.value with
 
 (* recursively substitute for all solved variables
    until only unsolved variables remain *)
-let rec subst (Sum (terms, b)) = 
+let rec subst (Sum (terms, b)) =
   let ts, terms =
     List.partition_tf terms ~f:(fun (Mult (_, x)) -> solved x)
   in
@@ -139,14 +139,14 @@ let equate t1 t2 =
   | [] ->
     raise (if Float.equal b 0.0 then Redundant else Inconsistent)
   | hd :: tl ->
-      (* choose a "pivot" *)
-      let Mult (a, x) = List.fold_left ~f:best_coeff ~init:hd tl in
-      (* solve for x *)
-      let ts =
-        List.filter ts ~f:(fun (Mult (_, y)) ->
-          not (Int.equal x.tag y.tag))
-      in
-      let t' = Sum (ts, b) in
+    (* choose a "pivot" *)
+    let Mult (a, x) = List.fold_left ~f:best_coeff ~init:hd tl in
+    (* solve for x *)
+    let ts =
+      List.filter ts ~f:(fun (Mult (_, y)) ->
+        not (Int.equal x.tag y.tag))
+    in
+    let t' = Sum (ts, b) in
       x.value <- Some (div (negate t') a)
 
 let value t = match subst t with
