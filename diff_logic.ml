@@ -6,7 +6,7 @@ module Id : sig
   include Comparable.S with type t := t
 end = struct
   include Int
-  let count = ref min_int
+  let count = ref Int.min_value
   let create () = (incr count; !count)
 end
 
@@ -123,8 +123,8 @@ let set_geq v (`Plus (v', k')) = (* v >= v' + k' *)
         e.weight <- k';
         test_edge v v' k';
       end
-  | None -> 
-      let e = { weight = k'; target = v } in 
+  | None ->
+      let e = { weight = k'; target = v } in
       v'.outgoing <- Id.Map.add v'.outgoing ~key:v.id ~data:e;
       test_edge v v' k';
   end
@@ -165,7 +165,7 @@ let limit vars =
   let get c u v =
     match T.Map.find c u with
     | None -> Negative_infinity
-    | Some c_u -> 
+    | Some c_u ->
         match T.Map.find c_u v with
         | None -> Negative_infinity
         | Some k -> k
