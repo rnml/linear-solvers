@@ -27,7 +27,7 @@ let linear_times a b =
 %nonassoc UMINUS
 
 %start main
-%type <Linear.t> main, expr
+%type <Solvers.Std.Linear.t> main, expr
 
 %%
 

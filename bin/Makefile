@@ -4,7 +4,7 @@ PACKAGES=core
 INCLUDES=-I ..
 LIBRARIES=solvers
 #SYNTAX=sexplib
-MODULES= parser main
+MODULES= parser lexer main
 
 B=
 T=linear.exe
@@ -34,7 +34,7 @@ OCAMLOPT_FLAGS=\
 OCAMLOPT=ocamlfind ocamlopt $(INCLUDES)
 OCAMLDEP=ocamlfind ocamldep
 OCAMLYACC=ocamlyacc
-OCAMLLEX=ocamlfind ocamllex -q
+OCAMLLEX=ocamllex -q
 
 LIB_FILES=$(addsuffix .cmxa, $(LIBRARIES))
 

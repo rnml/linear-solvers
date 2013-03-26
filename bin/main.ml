@@ -3,7 +3,8 @@ open Solvers.Std
 
 module L = Linear
 
-module P = Parser
+module P1 = Lexer
+module P2 = Parser
 
 (* open Int.Replace_polymorphic_compare *)
 
