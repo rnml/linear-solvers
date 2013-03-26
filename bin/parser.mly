@@ -1,6 +1,6 @@
 %{
 
-open Solvers
+open Solvers.Std
 
 let linear_div a b =
   match Linear.value b with
