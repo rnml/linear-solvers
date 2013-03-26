@@ -7,3 +7,6 @@ syntax: glob
 *.exe
 *.o
 .depend
+
+bin/parser.mli
+bin/parser.ml
