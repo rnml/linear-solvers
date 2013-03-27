@@ -18,7 +18,9 @@ let linear_times a b =
 %}
 
 %token <float> NUM
+%token <float> VAR
 %token PLUS MINUS TIMES DIV
+%token EQUALS SEMI
 %token LPAREN RPAREN
 %token EOF
 
@@ -33,6 +35,10 @@ let linear_times a b =
 
 main
   : expr EOF                { $1 }
+  ;
+
+stmt
+  : expr EQUALS expr        { Linear.equate $1 $3 }
   ;
 
 expr

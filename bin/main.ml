@@ -6,6 +6,8 @@ module L = Linear
 module P1 = Lexer
 module P2 = Parser
 
+let parse lexbuf : Linear.t = Parser.main Lexer.token lexbuf
+
 (* open Int.Replace_polymorphic_compare *)
 
 let ( * ) k b = L.times (Float.of_int k) b

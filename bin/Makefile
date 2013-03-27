@@ -38,11 +38,8 @@ OCAMLLEX=ocamllex -q
 
 LIB_FILES=$(addsuffix .cmxa, $(LIBRARIES))
 
-all: init $T
+all: $T
 	@echo done
-
-init:
-	eval `opam config -env`
 
 OBJECTS=$(addsuffix .cmx, $(MODULES))
 SYNTAX_EXT_PACKAGES=$(addsuffix .syntax, $(SYNTAX_EXTS))
@@ -78,7 +75,7 @@ std.cmx: std.ml
 	$(OCAMLYACC) $*.mly
 
 %.ml: %.mli %.mll
-	$(OCAMLLEX) $*.mll
+	$(OCAMLLEX) $*.mll -o $*.ml
 
 .depend:
 	$(OCAMLDEP) $(FIND_OPTS) *.mli *.ml > .depend
