@@ -10,4 +10,5 @@ syntax: glob
 
 bin/parser.mli
 bin/parser.ml
+bin/parser.output
 bin/lexer.ml

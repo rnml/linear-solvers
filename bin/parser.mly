@@ -1,24 +1,12 @@
 %{
 
+open Core.Std
 open Solvers.Std
-
-let linear_div a b =
-  match Linear.value b with
-  | None -> failwith "non-constant denominator"
-  | Some b -> Linear.div a b
-
-let linear_times a b =
-  match Linear.value a with
-  | Some a -> Linear.times a b
-  | None ->
-    match Linear.value b with
-    | Some b -> Linear.times b a
-    | None -> failwith "neither numerator nor denominator is constant"
 
 %}
 
 %token <float> NUM
-%token <float> VAR
+%token <Ast.Var.t> VAR
 %token PLUS MINUS TIMES DIV
 %token EQUALS SEMI
 %token LPAREN RPAREN
@@ -29,26 +17,46 @@ let linear_times a b =
 %nonassoc UMINUS
 
 %start main
-%type <Solvers.Std.Linear.t> main, expr
+%type <Ast.Expr.t> expr
+%type <Ast.Stmt.t list> main
 
 %%
 
 main
-  : expr EOF                { $1 }
+  : stmts EOF               { $1 }
+  ;
+
+stmts
+  : rev_stmts               { List.rev $1 }
+  ;
+
+rev_stmts
+  : stmt                    { [$1] }
+  | rev_stmts stmt          { $2 :: $1 }
   ;
 
 stmt
-  : expr EQUALS expr        { Linear.equate $1 $3 }
+  : expr EQUALS expr eqs SEMI  { Ast.Stmt.Equate ($1, $3, $4) }
+  ;
+
+eqs
+  : rev_eqs                 { List.rev $1 }
+  ;
+
+rev_eqs
+  :                         { [] }
+  | rev_eqs EQUALS expr     { $3 :: $1 }
   ;
 
 expr
-  : NUM                     { Linear.const $1 }
+  : NUM                     { Ast.Expr.Const $1 }
+  | VAR                     { Ast.Expr.Var $1 }
   | LPAREN expr RPAREN      { $2 }
-  | expr PLUS expr          { Linear.plus  $1 $3 }
-  | expr MINUS expr         { Linear.minus $1 $3 }
-  | expr TIMES expr         { linear_times $1 $3 }
-  | expr DIV expr           { linear_div   $1 $3 }
-  | MINUS expr %prec UMINUS { Linear.negate $2 }
+  | expr PLUS expr          { Ast.Expr.Plus  ($1, $3) }
+  | expr MINUS expr         { Ast.Expr.Minus ($1, $3) }
+  | expr TIMES expr         { Ast.Expr.Times ($1, $3) }
+  | expr DIV expr           { Ast.Expr.Div   ($1, $3) }
+  | MINUS expr %prec UMINUS { Ast.Expr.Negate $2 }
 ;
 
 %%

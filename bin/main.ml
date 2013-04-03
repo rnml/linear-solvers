@@ -3,42 +3,24 @@ open Solvers.Std
 
 module L = Linear
 
-module P1 = Lexer
-module P2 = Parser
+let main cin =
+  let lexbuf = Lexing.from_channel cin in
+  let stmts = Parser.main Lexer.token lexbuf in
+  let env = Ast.Env.create () in
+  List.iter stmts ~f:(Ast.Stmt.eval env);
+  Ast.Env.sexp_of_t env
+  |! Sexp.to_string_hum
+  |! print_endline;
+  ()
 
-let parse lexbuf : Linear.t = Parser.main Lexer.token lexbuf
-
-(* open Int.Replace_polymorphic_compare *)
-
-let ( * ) k b = L.times (Float.of_int k) b
-let ( + ) = L.plus
-let ( - ) a b = a + L.negate b
-
-let dump s t =
-  match L.value t with
-  | None   -> print_endline (s ^ " = NONE")
-  | Some v -> print_endline (s ^ " = " ^ Float.to_string v)
-
-let n = ref 0
-
-let die () =
-  print_endline begin "error: " ^ Int.to_string !n end;
-  failwith "bad"
-
-let eq a k = incr n; L.equate a (L.const (Float.of_int k))
-
-let equateS a k =
-  try eq a k with L.Inconsistent | L.Redundant -> die ()
+let command =
+  Command.basic ~summary:"linear equation solver"
+    Command.Spec.(empty +> anon (maybe ("FILE" %: file)))
+    (fun file () ->
+      match file with
+      | None -> main stdin
+      | Some file -> In_channel.with_file file ~f:main)
 
 let () =
-  let x = L.var () in
-  let y = L.var () in
-  let z = L.var () in
-        (* sq.ft      lot size *)
-  equateS (1600 * x + 23000 * y) 540;
-  equateS (1861 * x +  6969 * y) 450;
-  equateS (1813 * x +  7405 * y - z) 0;
-  dump "X" x;
-  dump "Y" y;
-  dump "Z" z;
+  Exn.handle_uncaught ~exit:true (fun () -> Command.run command)
 
