@@ -27,18 +27,6 @@ open Core.Std
 
 include Int.Replace_polymorphic_compare
 
-module Ordering = struct
-  module T = struct
-    type t = LT | EQ | GT
-  end
-  open T
-  let of_int n =
-    if n = 0 then EQ else
-      if n < 0 then LT else
-    (* n > 0 *)   GT
-end
-open Ordering.T
-
 include struct (*  terms of the form a1*x1 + ... + aN*xN + b  *)
 
   (* INVARIANTS:
@@ -90,9 +78,9 @@ let plus (Sum (ts1, b1)) (Sum (ts2, b2)) =
       (Mult (a2, x2) as t2 :: ts2 as tts2) ->
       begin
         match Ordering.of_int (Int.compare x1.tag x2.tag) with
-        | LT -> t1 :: merge (ts1, tts2)
-        | GT -> t2 :: merge (tts1, ts2)
-        | EQ -> cons (Mult (a1 +. a2, x1)) (merge (ts1, ts2))
+        | Less    -> t1 :: merge (ts1, tts2)
+        | Greater -> t2 :: merge (tts1, ts2)
+        | Equal   -> cons (Mult (a1 +. a2, x1)) (merge (ts1, ts2))
       end
   in
   Sum (merge (ts1, ts2), b1 +. b2)
