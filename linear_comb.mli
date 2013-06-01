@@ -1,3 +1,4 @@
+(* linear combinations *)
 open Core.Std
 
 type scalar = float
