@@ -2,8 +2,8 @@
 ### PARAMETERS #####################################################
 
 PACKAGES=core
-SYNTAX=sexplib
-MODULES=linear diff_logic std
+SYNTAX=sexplib comparelib
+MODULES=linear_comb linear linear_regression diff_logic std
 
 B=solvers
 T=$B.cmxa
@@ -63,7 +63,7 @@ std.cmx: std.ml
 	$(OCAMLOPT) -a $*.cmx -o $*.cmxa
 
 %_intf.mli: %_intf.ml
-	ln -sf $*_intf.ml $*_intf.mli 
+	ln -sf $*_intf.ml $*_intf.mli
 
 %.cmi: %.mli
 	$(OCAMLOPT) $(OCAMLOPT_FLAGS) -c $*.mli

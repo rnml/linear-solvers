@@ -6,9 +6,12 @@
 
 (* CR: parameterize this code by the underlying field of scalars *)
 
+module Var : Linear_comb.Var
+
 (* linear algebra expressions *)
 type t
-val var    : unit -> t (* fresh variable *)
+val var    : Var.t -> t
+val fresh  : unit -> t (* var (Var.create ()) *)
 val const  : float -> t
 val times  : float -> t -> t
 val div    : t -> float -> t
