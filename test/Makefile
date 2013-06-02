@@ -4,7 +4,7 @@ PACKAGES=core
 INCLUDES=-I ..
 LIBRARIES=solvers
 #SYNTAX=sexplib
-MODULES= test_diff_logic test_linear
+MODULES= test_diff_logic test_linear test_linear_regression
 
 B=
 T=test.exe

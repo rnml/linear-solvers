@@ -13,7 +13,8 @@ module type S = sig
   type var
   type t
 
-  val var    : var-> t (* fresh variable *)
+  val var    : var-> t
+  val fresh  : unit -> t (* fresh variable *)
   val const  : scalar -> t
   val times  : scalar -> t -> t
   val div    : t -> scalar -> t

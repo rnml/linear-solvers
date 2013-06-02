@@ -49,8 +49,6 @@ and Comb : Linear_comb.S_concrete with type var = Var.t
 
 include Comb
 
-let fresh () = var (Var.create ())
-
 (* a solved variable is one that has been set equal to a term *)
 let solved x =
   match x.Var.value with

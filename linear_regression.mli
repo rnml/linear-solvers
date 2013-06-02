@@ -9,6 +9,7 @@ module Var : Linear_comb.Var
 (* linear algebra expressions *)
 type t
 val var    : Var.t -> t
+val fresh  : unit -> t
 val const  : float -> t
 val times  : float -> t -> t
 val div    : t -> float -> t

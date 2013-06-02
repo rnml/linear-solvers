@@ -14,7 +14,8 @@ module type S = sig
   type var
   type t
 
-  val var    : var -> t (* fresh variable *)
+  val var    : var -> t
+  val fresh  : unit -> t (* fresh variable *)
   val const  : scalar -> t
   val times  : scalar -> t -> t
   val div    : t -> scalar -> t
@@ -47,6 +48,7 @@ module Make (Var : Var) = struct
 
   let const c = Sum ([], c)
   let var x = Sum ([Prod (1.0, x)], 0.0)
+  let fresh () = var (Var.create ())
 
   (* zero-coefficient-avoiding cons for term list *)
   let cons (Prod (a, _) as t) ts =
