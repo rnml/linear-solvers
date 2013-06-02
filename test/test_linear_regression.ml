@@ -15,7 +15,7 @@ let dump s t =
 
 let eq a k = L.equate a (L.const (Float.of_int k))
 
-let () =
+let () = (* exactly solvable #1 *)
   let x = L.Var.create () in
   begin
     let x = L.var x in
@@ -26,7 +26,7 @@ let () =
   | _ -> assert false
 ;;
 
-let () =
+let () = (* exactly solvable #2 *)
   let x = L.Var.create () in
   begin
     let x = L.var x in
@@ -37,7 +37,7 @@ let () =
   | _ -> assert false
 ;;
 
-let () =
+let () = (* overdetermined *)
   let x = L.Var.create () in
   begin
     let x = L.var x in
@@ -49,7 +49,7 @@ let () =
   | _ -> assert false
 ;;
 
-let () =
+let () = (* underdeterimined *)
   let x = L.Var.create () in
   let y = L.Var.create () in
   begin
