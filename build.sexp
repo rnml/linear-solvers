@@ -1,0 +1,6 @@
+((packages  (core))
+ (includes  ())
+ (libraries ())
+ (syntax    (sexplib comparelib))
+ (modules   (linear_comb linear linear_regression diff_logic std))
+ (target (lib solvers)))
