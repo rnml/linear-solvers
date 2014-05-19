@@ -2,5 +2,5 @@
  (includes  ())
  (libraries ())
  (syntax    (sexplib comparelib))
- (modules   (linear_comb linear linear_regression diff_logic std))
+ (modules   (linear_comb linear linear_regression std))
  (target (lib solvers)))
