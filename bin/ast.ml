@@ -43,7 +43,7 @@ module Expr = struct
   with sexp_of
 
   let rec eval env = function
-    | Var x -> Hashtbl.find_or_add env x ~default:Linear.var
+    | Var x -> Hashtbl.find_or_add env x ~default:(fun () -> Linear.var (Linear.Var.create ()))
     | Const x      -> Linear.const x
     | Times (a, b) -> Linear.times (eval env a) (eval env b)
     | Div   (a, b) -> Linear.div   (eval env a) (eval env b)
@@ -67,4 +67,3 @@ module Stmt = struct
       List.iter cs ~f:(fun c -> Linear.equate b (eval c))
 
 end
-
