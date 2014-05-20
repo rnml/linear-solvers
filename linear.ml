@@ -102,4 +102,3 @@ let equate t1 t2 =
 let value t = match subst t with
   | Sum ([], c) -> Some c (* no unsolved variables *)
   | Sum (_, _) -> None
-
