@@ -3,16 +3,19 @@
 PACKAGES=core
 INCLUDES=
 LIBRARIES=
-SYNTAX=sexplib comparelib
+SYNTAX=sexplib comparelib pa_ounit
 
 MODULES= \
   linear_comb \
   linear \
   linear_regression \
+  test_linear \
+  test_linear_regression \
   std \
 
 B=solvers
 T=$B.cmxa
+TESTS=std.exe
 FOR_PACK_OPT=-for-pack Solvers
 ### RULES ##########################################################
 
@@ -42,6 +45,9 @@ all: init $T
 
 init:
 	eval `opam config -env`
+
+runtests: $(TESTS)
+	./$(TESTS) inline-test-runner dummy
 
 OBJECTS=$(addsuffix .cmx, $(MODULES))
 SYNTAX_EXT_PACKAGES=$(addsuffix .syntax, $(SYNTAX_EXTS))
