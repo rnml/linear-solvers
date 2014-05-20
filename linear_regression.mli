@@ -4,7 +4,10 @@
    License: BSD
 *)
 
-module Var : Linear_comb.Var
+module Var : sig
+  type t with compare
+  val create : unit -> t
+end
 
 (* linear algebra expressions *)
 type t
@@ -25,4 +28,3 @@ val sum    : t list -> t
 val equate : t -> t -> unit
 
 val value : Var.t -> float option
-

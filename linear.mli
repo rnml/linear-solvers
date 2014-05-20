@@ -6,7 +6,10 @@
 
 (* CR: parameterize this code by the underlying field of scalars *)
 
-module Var : Linear_comb.Var
+module Var : sig
+  type t with compare
+  val create : unit -> t
+end
 
 (* linear algebra expressions *)
 type t
@@ -32,4 +35,3 @@ val equate : t -> t -> unit
     (* if equation is redundant w.r.t. previously asserted equations *)
 
 val value : t -> float option
-
