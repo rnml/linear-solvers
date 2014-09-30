@@ -1,6 +1,6 @@
 My first cram test.
 
-  $ cd ../..
+  $ cd $TESTDIR
 
   $ ./linear.exe <<EOF
   >   2*a + 17*b - 27*c = 1;
