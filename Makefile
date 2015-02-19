@@ -31,7 +31,12 @@ ifdef SYNTAX
   endif
 endif
 
-OCAMLOPT_FLAGS=$(FIND_OPTS) -thread -linkpkg -w YSPUZF -warn-error YSPUZ
+OCAMLOPT_FLAGS=\
+  $(FIND_OPTS) \
+  -thread \
+  -linkpkg \
+  -w +Y+S+P+U+Z+F-40-41-42 \
+  -warn-error +Y+S+P+U+Z-40-41-42
 
 OCAMLC=ocamlfind ocamlc $(INCLUDES)
 OCAMLOPT=ocamlfind ocamlopt $(INCLUDES)
