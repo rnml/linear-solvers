@@ -17,6 +17,7 @@ B=solvers
 T=$B.cmxa
 TESTS=std.exe
 FOR_PACK_OPT=-for-pack Solvers
+
 ### RULES ##########################################################
 
 SYNTAX_PACKAGES=$(addsuffix .syntax, $(SYNTAX))
